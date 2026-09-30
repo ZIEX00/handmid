@@ -958,6 +958,113 @@ footer p {
   font-size: 12px;
   line-height: 1.5;
   animation: toast-in 0.25s ease both;
+  pointer-events: auto;
+}
+.order-tracking-toast {
+  display: grid;
+  gap: 8px;
+  overflow-wrap: anywhere;
+}
+.order-tracking-toast a {
+  color: #f2c8a8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.tracking-page {
+  min-height: 100vh;
+  padding: 28px 18px;
+  background: var(--paper);
+}
+.tracking-header {
+  width: min(760px, 100%);
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.tracking-header a:last-child {
+  color: var(--muted);
+  font-size: 12px;
+}
+.tracking-panel {
+  width: min(600px, 100%);
+  margin: 0 auto;
+  padding: 30px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+}
+.tracking-panel h1 {
+  margin: 0 0 8px;
+  font: 600 28px "Playfair Display", serif;
+}
+.tracking-panel > p {
+  margin: 0 0 22px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.tracking-form {
+  display: grid;
+  gap: 14px;
+}
+.tracking-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.tracking-form input {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+.tracking-result {
+  margin-top: 22px;
+}
+.tracking-result:empty {
+  display: none;
+}
+.tracking-result dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.tracking-result dt {
+  color: var(--muted);
+}
+.tracking-result dd {
+  margin: 0;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+.tracking-result .tracking-items {
+  line-height: 1.7;
+}
+.tracking-status {
+  font-weight: 700;
+}
+.tracking-status.pending {
+  color: #a15d24;
+}
+.tracking-status.cancelled {
+  color: #9b5145;
+}
+.tracking-message {
+  margin: 14px 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.tracking-cancel {
+  margin-top: 8px;
+  padding: 10px 14px;
+  border: 1px solid #9b5145;
+  color: #9b5145;
 }
 .site-toast.hide {
   animation: toast-out 0.25s ease both;
@@ -1153,6 +1260,8 @@ footer p {
   direction: rtl;
 }
 @media (max-width: 600px) {
+  .tracking-panel { padding: 22px 18px; }
+  .tracking-header .brand small { display: none; }
   body { overflow-x: hidden; }
   .announcement { font-size: 9px; padding: 7px 10px; }
   .site-header { height: 62px; padding: 0 14px; gap: 8px; }
