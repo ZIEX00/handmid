@@ -846,6 +846,68 @@ footer p {
   padding: 55px 0;
   font-size: 12px;
 }
+.cart-item {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cart-item-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.cart-item-info {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+.cart-item-name {
+  overflow-wrap: anywhere;
+}
+.cart-item-price {
+  color: var(--muted);
+  font-size: 11px;
+}
+.cart-item-actions,
+.quantity-control {
+  display: flex;
+  align-items: center;
+}
+.cart-item-actions {
+  justify-content: space-between;
+  gap: 8px;
+}
+.quantity-control {
+  height: 30px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.quantity-control button {
+  width: 30px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+}
+.quantity-control button:disabled {
+  color: #b8aca1;
+  cursor: not-allowed;
+}
+.quantity-control output {
+  min-width: 24px;
+  text-align: center;
+  font-size: 11px;
+}
+.cart-remove {
+  color: #9b5145;
+  font-size: 10px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .checkout-form {
   display: none;
   margin-top: 18px;
