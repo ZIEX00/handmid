@@ -376,6 +376,23 @@ function toggleCart(open) {
     .setAttribute("aria-hidden", String(!open));
 }
 document.addEventListener("click", (event) => {
+  const menuButton = event.target.closest(".menu-button");
+  if (menuButton) {
+    const navigation = document.querySelector("#main-nav");
+    const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+    menuButton.setAttribute("aria-expanded", String(!isExpanded));
+    menuButton.setAttribute("aria-label", isExpanded ? "Open menu" : "Close menu");
+    navigation.classList.toggle("mobile-open", !isExpanded);
+    return;
+  }
+  if (event.target.closest("#main-nav a")) {
+    const navigation = document.querySelector("#main-nav");
+    const menuButton = document.querySelector(".menu-button");
+    navigation.classList.remove("mobile-open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open menu");
+  }
+
   const favoriteButton = event.target.closest(".heart");
   if (favoriteButton) {
     toggleFavorite(favoriteButton.dataset.favoriteId);
