@@ -33,11 +33,13 @@ const CART_KEY = "handmade-cart";
 const ORDER_KEY = "handmade-orders";
 const REVIEW_KEY = "handmade-reviews";
 const FAVORITES_KEY = "handmade-favorites";
+const PRODUCT_PREVIEW_LIMIT = 10;
 let products = fallbackProducts;
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
 let language = localStorage.getItem("handmade-language") || "en";
 let activeCategory = "all";
 let searchTerm = "";
+let showAllProducts = false;
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
 }
@@ -101,6 +103,7 @@ function toggleFavorite(productId) {
   const nextIds = favoriteIds.includes(id) ? favoriteIds.filter((item) => item !== id) : [...favoriteIds, id];
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(nextIds));
   renderProducts();
+  renderFavorites();
   showToast(nextIds.includes(id) ? (language === "ar" ? "تمت إضافة المنتج للمفضلة." : "Added to favorites.") : (language === "ar" ? "تمت إزالة المنتج من المفضلة." : "Removed from favorites."), "success");
 }
 const translations = {
@@ -108,13 +111,13 @@ const translations = {
     announcement: "Free delivery on orders over EGP 800 <span>•</span> Made by hand in Egypt",
     home: "Home", shop: "Shop", categories: "Categories", customOrders: "Custom Orders", about: "About", contact: "Contact", trackOrder: "Track Order", contactEyebrow: "LET'S TALK", contactTitle: "A little question? We're here.", contactDescription: "Message us about an order, a custom idea, or anything you'd like to know.", whatsappUs: "Chat with us on WhatsApp",
     heroEyebrow: "HANDMADE WITH LOVE", heroTitle: "Made by Hand.<br>Made for You.", heroDescription: "Unique crochet pieces, beautiful beadwork and handmade accessories — crafted with care, just for you.", shopCollection: "Shop Collection", shopByCategory: "Shop by Category", viewAll: "View All", featuredProducts: "Featured Products",
-    yourIdea: "Your Idea, Handmade.", customDescription: "Want something special? Choose your colors, size and style — and we’ll create it just for you.", requestOrder: "Request Custom Order", chooseStyle: "Choose Your Style", bracelets: "◌ Bracelets", necklaces: "◌ Necklaces", keychains: "◌ Keychains", crochetItems: "◌ Crochet Items", customerReviews: "What Our Customers Say", viewReviews: "View All Reviews", followUs: "Follow Us @handmade", moreInstagram: "More on Instagram", yourBag: "Your Bag", emptyCart: "Your bag is waiting for something special.", total: "Total", checkout: "Checkout", addToBag: "Add to bag", loading: "Loading handmade pieces...", currency: "EGP", storyEyebrow: "OUR STORY", storyTitle: "Crafted slowly, made to feel personal.", storyDescription: "Each handmade piece begins with an idea, a color palette, and a lot of love. We design crochet, beadwork, and accessories that feel warm, wearable, and unique.", smallBatch: "Small batch", smallBatchDescription: "Thoughtfully made in limited runs.", giftReady: "Gift-ready", giftReadyDescription: "Beautiful packaging for every order.", madeInEgypt: "Made in Egypt", nameLabel: "Name", phoneLabel: "Phone", noteLabel: "Order note", placeOrder: "Place Order", writeReview: "Share your review", sendReview: "Send review",
+    yourIdea: "Your Idea, Handmade.", customDescription: "Want something special? Choose your colors, size and style — and we’ll create it just for you.", requestOrder: "Request Custom Order", chooseStyle: "Choose Your Style", bracelets: "◌ Bracelets", necklaces: "◌ Necklaces", keychains: "◌ Keychains", crochetItems: "◌ Crochet Items", customerReviews: "What Our Customers Say", viewReviews: "View All Reviews", followUs: "Follow Us @handmade_egypt_1", moreInstagram: "More on Instagram", yourBag: "Your Bag", favorites: "Favorites", emptyFavorites: "You haven't saved any products yet.", removeFavorite: "Remove from favorites", openProduct: "View product", emptyCart: "Your bag is waiting for something special.", total: "Total", checkout: "Checkout", addToBag: "Add to bag", showMoreProducts: "Show remaining products", loading: "Loading handmade pieces...", currency: "EGP", storyEyebrow: "OUR STORY", storyTitle: "Crafted slowly, made to feel personal.", storyDescription: "Each handmade piece begins with an idea, a color palette, and a lot of love. We design crochet, beadwork, and accessories that feel warm, wearable, and unique.", smallBatch: "Small batch", smallBatchDescription: "Thoughtfully made in limited runs.", giftReady: "Gift-ready", giftReadyDescription: "Beautiful packaging for every order.", madeInEgypt: "Made in Egypt", nameLabel: "Name", phoneLabel: "Phone", noteLabel: "Order note", placeOrder: "Place Order", writeReview: "Share your review", sendReview: "Send review",
   },
   ar: {
     announcement: "توصيل مجاني للطلبات أكثر من ٨٠٠ جنيه <span>•</span> مصنوع يدويًا في مصر",
     home: "الرئيسية", shop: "المتجر", categories: "التصنيفات", customOrders: "طلبات خاصة", about: "عن Handmade", contact: "تواصل معنا", trackOrder: "تتبع طلبك", contactEyebrow: "احكيلنا", contactTitle: "عندك سؤال؟ إحنا موجودين.", contactDescription: "كلمينا عن طلبك، أو فكرتك لتصميم خاص، أو أي حاجة حابة تعرفيها.", whatsappUs: "راسلينا على واتساب",
     heroEyebrow: "مصنوع بحب", heroTitle: "صُنع يدويًا.<br>صُنع لك.", heroDescription: "قطع كروشيه مميزة، وإكسسوارات من الخرز مصنوعة يدويًا بعناية مخصوص عشانك.", shopCollection: "تسوق المجموعة", shopByCategory: "تسوق حسب التصنيف", viewAll: "عرض الكل", featuredProducts: "منتجات مميزة",
-    yourIdea: "فكرتك، بتنفيذ يدوي.", customDescription: "عايز حاجة مميزة؟ اختار الألوان والمقاس والشكل، وإحنا هننفذها مخصوص ليك.", requestOrder: "اطلب تصميم خاص", chooseStyle: "اختار الشكل", bracelets: "◌ أساور", necklaces: "◌ سلاسل", keychains: "◌ ميداليات", crochetItems: "◌ منتجات كروشيه", customerReviews: "آراء عملائنا", viewReviews: "عرض كل الآراء", followUs: "تابعنا @handmaid_00", moreInstagram: "المزيد على إنستجرام", yourBag: "سلتك", emptyCart: "سلتك مستنية حاجة مميزة.", total: "الإجمالي", checkout: "إتمام الطلب", addToBag: "أضف للسلة", loading: "جاري تحميل المنتجات...", currency: "جنيه", storyEyebrow: "حكايتنا", storyTitle: "مصنوع على مهله، ومخصوص عشانك.", storyDescription: "كل قطعة بتبدأ بفكرة وألوان متناسقة وحب كبير. بنصمم كروشيه ومشغولات خرز وإكسسوارات دافئة ومميزة وسهلة الاستخدام.", smallBatch: "كميات محدودة", smallBatchDescription: "مصنوعة بعناية وبأعداد قليلة.", giftReady: "جاهزة كهدية", giftReadyDescription: "تغليف جميل مع كل طلب.", madeInEgypt: "مصنوع في مصر", nameLabel: "الاسم", phoneLabel: "رقم الهاتف", noteLabel: "ملاحظات الطلب", placeOrder: "تأكيد الطلب", writeReview: "شاركنا رأيك", sendReview: "إرسال الرأي",
+    yourIdea: "فكرتك، بتنفيذ يدوي.", customDescription: "عايز حاجة مميزة؟ اختار الألوان والمقاس والشكل، وإحنا هننفذها مخصوص ليك.", requestOrder: "اطلب تصميم خاص", chooseStyle: "اختار الشكل", bracelets: "◌ أساور", necklaces: "◌ سلاسل", keychains: "◌ ميداليات", crochetItems: "◌ منتجات كروشيه", customerReviews: "آراء عملائنا", viewReviews: "عرض كل الآراء", followUs: "تابعنا @handmade_egypt_1", moreInstagram: "المزيد على إنستجرام", yourBag: "سلتك", favorites: "المفضلة", emptyFavorites: "لسه ما أضفتش منتجات للمفضلة.", removeFavorite: "إزالة من المفضلة", openProduct: "عرض المنتج", emptyCart: "سلتك مستنية حاجة مميزة.", total: "الإجمالي", checkout: "إتمام الطلب", addToBag: "أضف للسلة", showMoreProducts: "عرض باقي المنتجات", loading: "جاري تحميل المنتجات...", currency: "جنيه", storyEyebrow: "حكايتنا", storyTitle: "مصنوع على مهله، ومخصوص عشانك.", storyDescription: "كل قطعة بتبدأ بفكرة وألوان متناسقة وحب كبير. بنصمم كروشيه ومشغولات خرز وإكسسوارات دافئة ومميزة وسهلة الاستخدام.", smallBatch: "كميات محدودة", smallBatchDescription: "مصنوعة بعناية وبأعداد قليلة.", giftReady: "جاهزة كهدية", giftReadyDescription: "تغليف جميل مع كل طلب.", madeInEgypt: "مصنوع في مصر", nameLabel: "الاسم", phoneLabel: "رقم الهاتف", noteLabel: "ملاحظات الطلب", placeOrder: "تأكيد الطلب", writeReview: "شاركنا رأيك", sendReview: "إرسال الرأي",
   },
 };
 const categories = [
@@ -192,6 +195,9 @@ function getVisibleProducts() {
     return matchesCategory && matchesSearch;
   });
 }
+function getProductId(product) {
+  return String(product.id || products.indexOf(product));
+}
 function addProductToCart(product) {
   const existing = cart.find((item) => item.name === product.name);
   const availableStock = Number(product.stock);
@@ -215,18 +221,45 @@ function showProductDetails(product) {
 }
 function renderProducts() {
   const visibleProducts = getVisibleProducts();
+  const showMoreButton = document.querySelector("#show-more-products");
+  showMoreButton.hidden = visibleProducts.length <= PRODUCT_PREVIEW_LIMIT || showAllProducts;
+  showMoreButton.textContent = translations[language].showMoreProducts;
   if (!visibleProducts.length) {
     document.querySelector("#product-grid").innerHTML = `<div class="empty-state">${language === "ar" ? "لا توجد منتجات مطابقة للبحث." : "No products match your search."}</div>`;
     return;
   }
 
-  document.querySelector("#product-grid").innerHTML = visibleProducts
-    .map(
-      (product, index) =>
-        `<article class="product-card" data-product-id="${escapeHtml(product.id || index)}"><button class="heart ${getFavoriteIds().includes(String(product.id || index)) ? "active" : ""}" data-favorite-id="${escapeHtml(product.id || index)}" aria-label="Add ${escapeHtml(product.name)} to wishlist"><i data-lucide="heart"></i></button><img src="${escapeHtml(product.image)}" alt="${escapeHtml(language === "ar" ? product.name_ar || product.name : product.name)}" loading="lazy"><div class="product-info"><h3>${escapeHtml(language === "ar" ? product.name_ar || product.name : product.name)}</h3><strong class="price">${translations[language].currency} ${escapeHtml(product.price)}</strong><div class="stars">★★★★★ <small>(${index * 7 + 12})</small></div><button class="product-details-trigger" type="button">${language === "ar" ? "عرض التفاصيل" : "View details"}</button><button class="button dark add-to-cart" data-index="${escapeHtml(product.id || index)}" style="margin-top:10px;padding:8px 11px;width:100%"><span>${translations[language].addToBag}</span> <span>+</span></button></div></article>`,
-    )
+  const productsToRender = showAllProducts
+    ? visibleProducts
+    : visibleProducts.slice(0, PRODUCT_PREVIEW_LIMIT);
+  document.querySelector("#product-grid").innerHTML = productsToRender
+    .map((product, index) => {
+      const productId = getProductId(product);
+      const name = language === "ar" ? product.name_ar || product.name : product.name;
+      return `<article class="product-card" data-product-id="${escapeHtml(productId)}"><button class="heart ${getFavoriteIds().includes(productId) ? "active" : ""}" data-favorite-id="${escapeHtml(productId)}" aria-label="Add ${escapeHtml(product.name)} to wishlist"><i data-lucide="heart"></i></button><img src="${escapeHtml(product.image)}" alt="${escapeHtml(name)}" loading="lazy"><div class="product-info"><h3>${escapeHtml(name)}</h3><strong class="price">${translations[language].currency} ${escapeHtml(product.price)}</strong><div class="stars">★★★★★ <small>(${index * 7 + 12})</small></div><button class="product-details-trigger" type="button">${language === "ar" ? "عرض التفاصيل" : "View details"}</button><button class="button dark add-to-cart" data-index="${escapeHtml(productId)}" style="margin-top:10px;padding:8px 11px;width:100%"><span>${translations[language].addToBag}</span> <span>+</span></button></div></article>`;
+    })
     .join("");
   lucide.createIcons({ attrs: { "stroke-width": 1.5 } });
+}
+function renderFavorites() {
+  const favoritesList = document.querySelector("#favorites-items");
+  if (!favoritesList) return;
+  const favoriteProducts = getFavoriteIds()
+    .map((favoriteId) => products.find((product) => getProductId(product) === favoriteId))
+    .filter(Boolean);
+  favoritesList.innerHTML = favoriteProducts.length
+    ? favoriteProducts.map((product) => {
+      const productId = getProductId(product);
+      const name = language === "ar" ? product.name_ar || product.name : product.name;
+      return `<article class="favorite-item">
+        <button class="favorite-product-link" type="button" data-open-favorite="${escapeHtml(productId)}" aria-label="${escapeHtml(translations[language].openProduct)}: ${escapeHtml(name)}">
+          <img src="${escapeHtml(product.image)}" alt="">
+          <span><b>${escapeHtml(name)}</b><small>${translations[language].currency} ${escapeHtml(product.price)}</small></span>
+        </button>
+        <button class="favorite-remove" type="button" data-remove-favorite="${escapeHtml(productId)}" aria-label="${escapeHtml(translations[language].removeFavorite)}">×</button>
+      </article>`;
+    }).join("")
+    : `<p class="empty-cart">${translations[language].emptyFavorites}</p>`;
 }
 function getReviews() {
   const saved = localStorage.getItem(REVIEW_KEY);
@@ -292,6 +325,7 @@ function applyLanguage() {
   });
   document.querySelector(".language-toggle").textContent = language === "ar" ? "English" : "عربي";
   document.querySelector(".language-toggle").setAttribute("aria-label", language === "ar" ? "التبديل إلى الإنجليزية" : "التبديل إلى العربية");
+  document.querySelector("#favorites-button").setAttribute("aria-label", language === "ar" ? "المفضلة" : "Favorites");
   document.querySelector("#product-search").placeholder = language === "ar" ? "ابحث باسم المنتج" : "Search by product name";
   document.querySelector('input[name="name"]').placeholder = language === "ar" ? "اسمك" : "Your name";
   document.querySelector('input[name="phone"]').placeholder = language === "ar" ? "01xxxxxxxxx" : "+966 5xx xxx xxx";
@@ -302,6 +336,7 @@ function applyLanguage() {
   renderCategories();
   renderFilterPills();
   renderProducts();
+  renderFavorites();
   renderReviews();
   updateCart();
 }
@@ -315,6 +350,7 @@ async function loadProducts() {
     }));
     renderFilterPills();
     renderProducts();
+    renderFavorites();
     return;
   }
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
@@ -336,6 +372,7 @@ async function loadProducts() {
       }
       renderFilterPills();
       renderProducts();
+      renderFavorites();
     }
   } catch (error) {
     console.warn(
@@ -350,7 +387,6 @@ function saveCart() {
 function updateCart() {
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
   const drawer = document.querySelector("#cart-drawer");
-  const checkoutButton = document.querySelector(".checkout");
   const checkoutForm = document.querySelector("#checkout-form");
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -385,16 +421,31 @@ function updateCart() {
     : `<p class="empty-cart">${translations[language].emptyCart}</p>`;
 
   drawer.classList.toggle("has-items", cart.length > 0);
-  checkoutButton.style.display = cart.length ? "block" : "none";
   checkoutForm.style.display = cart.length ? "grid" : "none";
   saveCart();
 }
 function toggleCart(open) {
-  document.querySelector("#cart-drawer").classList.toggle("open", open);
-  document.querySelector(".overlay").classList.toggle("open", open);
-  document
-    .querySelector("#cart-drawer")
-    .setAttribute("aria-hidden", String(!open));
+  const drawer = document.querySelector("#cart-drawer");
+  const favoritesDrawer = document.querySelector("#favorites-drawer");
+  drawer.classList.toggle("open", open);
+  drawer.setAttribute("aria-hidden", String(!open));
+  if (open) {
+    favoritesDrawer.classList.remove("open");
+    favoritesDrawer.setAttribute("aria-hidden", "true");
+  }
+  document.querySelector(".overlay").classList.toggle("open", open || favoritesDrawer.classList.contains("open"));
+}
+function toggleFavorites(open) {
+  const drawer = document.querySelector("#favorites-drawer");
+  const cartDrawer = document.querySelector("#cart-drawer");
+  if (open) renderFavorites();
+  drawer.classList.toggle("open", open);
+  drawer.setAttribute("aria-hidden", String(!open));
+  if (open) {
+    cartDrawer.classList.remove("open");
+    cartDrawer.setAttribute("aria-hidden", "true");
+  }
+  document.querySelector(".overlay").classList.toggle("open", open || cartDrawer.classList.contains("open"));
 }
 document.addEventListener("click", (event) => {
   const menuButton = event.target.closest(".menu-button");
@@ -419,10 +470,41 @@ document.addEventListener("click", (event) => {
     toggleFavorite(favoriteButton.dataset.favoriteId);
     return;
   }
+  const openFavorite = event.target.closest("[data-open-favorite]");
+  if (openFavorite) {
+    const favoriteId = openFavorite.dataset.openFavorite;
+    const product = products.find((item) => getProductId(item) === favoriteId);
+    if (!product) return;
+    toggleFavorites(false);
+    activeCategory = "all";
+    searchTerm = "";
+    document.querySelector("#product-search").value = "";
+    showAllProducts = true;
+    renderFilterPills();
+    renderProducts();
+    requestAnimationFrame(() => {
+      const productCard = [...document.querySelectorAll(".product-card[data-product-id]")]
+        .find((card) => card.dataset.productId === favoriteId);
+      productCard?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    return;
+  }
+  const removeFavorite = event.target.closest("[data-remove-favorite]");
+  if (removeFavorite) {
+    toggleFavorite(removeFavorite.dataset.removeFavorite);
+    return;
+  }
   const categoryButton = event.target.closest(".filter-pill");
   if (categoryButton) {
     activeCategory = categoryButton.dataset.category;
+    showAllProducts = false;
     renderFilterPills();
+    renderProducts();
+    return;
+  }
+
+  if (event.target.closest("#show-more-products")) {
+    showAllProducts = true;
     renderProducts();
     return;
   }
@@ -432,6 +514,7 @@ document.addEventListener("click", (event) => {
     const chosenCategory = categoryCard.dataset.category;
     if (chosenCategory) {
       activeCategory = chosenCategory;
+      showAllProducts = false;
       renderFilterPills();
       renderProducts();
       document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
@@ -440,7 +523,12 @@ document.addEventListener("click", (event) => {
 
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "cart") toggleCart(true);
-  if (action === "close-cart") toggleCart(false);
+  if (action === "favorites") {
+    toggleFavorites(true);
+    return;
+  }
+  if (action === "close-cart" || action === "close-drawers") toggleCart(false);
+  if (action === "close-favorites" || action === "close-drawers") toggleFavorites(false);
   const cartControl = event.target.closest("[data-cart-action]");
   if (cartControl) {
     const index = Number(cartControl.dataset.cartIndex);
@@ -460,10 +548,6 @@ document.addEventListener("click", (event) => {
     }
     updateCart();
     return;
-  }
-  if (action === "favorites") {
-    document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
-    showToast(language === "ar" ? "اختار علامة القلب لإضافة المنتجات للمفضلة." : "Use the heart icon on a product to save it to favorites.", "success");
   }
   if (action === "language") {
     language = language === "ar" ? "en" : "ar";
@@ -489,14 +573,11 @@ document.addEventListener("click", (event) => {
     if (product) showProductDetails(product);
   }
 
-  if (event.target.closest(".checkout")) {
-    if (!cart.length) return;
-    document.querySelector("#checkout-form").scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
 });
 document.addEventListener("input", (event) => {
   if (event.target.matches("#product-search")) {
     searchTerm = event.target.value.trim();
+    showAllProducts = false;
     renderProducts();
   }
 });

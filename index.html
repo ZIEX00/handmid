@@ -36,7 +36,7 @@
       <div class="header-actions">
         <button class="language-toggle" data-action="language" aria-label="Switch language">عربي</button>
         <button aria-label="Search"><i data-lucide="search"></i></button
-        ><button aria-label="Favorites" data-action="favorites"><i data-lucide="heart"></i></button
+        ><button id="favorites-button" aria-label="Favorites" data-action="favorites"><i data-lucide="heart"></i></button
         ><button
           class="cart-button"
           aria-label="Shopping bag"
@@ -91,9 +91,9 @@
           </div>
         </div>
         <div class="story-gallery" aria-label="Handmade product gallery">
-          <img class="tall" src="logos/handmade_crochet_banner.png" alt="Crochet handmade product" loading="lazy" />
+          <img class="tall" src="https://i.ibb.co/TxVxwDGd/7f3257e1-34c0-48c4-911f-2f8a2e660a8e.jpg" alt="Crochet handmade product" loading="lazy" />
           <img class="wide" src="logos/crochet.png" alt="Handmade crochet item" loading="lazy" />
-          <img class="small" src="logos/Keychains.png" alt="Keychain product" loading="lazy" />
+          <img class="small" src="https://i.ibb.co/Zz8pzLTS/f79a6a61-f7c1-415b-bb8c-285951fdbfd3.jpg" alt="Keychain product" loading="lazy" />
           <div class="story-badge" data-i18n="madeInEgypt">Made in Egypt</div>
         </div>
       </section>
@@ -112,6 +112,9 @@
         <div class="product-grid" id="product-grid">
           <div class="loading">Loading handmade pieces...</div>
         </div>
+        <button class="button dark show-more-products" id="show-more-products" type="button" hidden>
+          عرض باقي المنتجات
+        </button>
       </section>
       <section class="custom-banner" id="custom">
         <div>
@@ -175,8 +178,8 @@
       </section>
       <section class="instagram" id="instagram">
         <div class="section-heading">
-          <h2 data-i18n="followUs">Follow Us @handmaid_00</h2>
-          <a href="https://www.instagram.com/handmaid_00?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="><span data-i18n="moreInstagram">More on Instagram</span> <span>→</span></a>
+          <h2 data-i18n="followUs">Follow Us @handmade_egypt_1</h2>
+          <a href="https://www.instagram.com/handmade_egypt_1/"><span data-i18n="moreInstagram">More on Instagram</span> <span>→</span></a>
         </div>
         <div class="insta-grid">
           <img
@@ -185,22 +188,22 @@
             loading="lazy"
             decoding="async"
           /><img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBQu9ji9A50HLihKkukhWl06Za7SVLPHXKu1DTyJ3v5-e9r3_bfx5MPN0&s=10"
+            src="https://i.ibb.co/d0895fnW/874bd997-dcff-4dd6-a988-3cc5eb549b85.jpg"
             alt="Beaded jewelry"
             loading="lazy"
             decoding="async"
           /><img
-            src="https://joumla-eg.com/wp-content/uploads/2025/09/d5f45c0b1d92b63f5a638ba7e3cf0b73.jpg"
+            src="https://i.ibb.co/TxVxwDGd/7f3257e1-34c0-48c4-911f-2f8a2e660a8e.jpg"
             alt="Jewelry"
             loading="lazy"
             decoding="async"
           /><img
-            src="https://www.cotzl.com/uploads/products/t/p-2759-p-9444.jpg"
+            src="https://i.ibb.co/pBmHkP0Z/09c8f864-42a1-4a2f-a088-f889ac0e6f08.jpg"
             alt="Handmade bracelet"
             loading="lazy"
             decoding="async"
           /><img
-            src="https://i.pinimg.com/474x/be/59/03/be59031faee802ada8685f69e1292c83.jpg"
+            src="https://i.ibb.co/wmjbt4c/IMG-2189.png"
             alt="Colorful beads"
             loading="lazy"
             decoding="async"
@@ -251,11 +254,20 @@
           <span data-i18n="noteLabel">Order note</span>
           <textarea name="note" rows="3" placeholder="اكتب الألوان أو أي تفاصيل تفضلها"></textarea>
         </label>
-        <button class="button dark submit-order" type="submit"><span data-i18n="placeOrder">Place Order</span> <span>→</span></button>
+        <button class="button dark submit-order" type="submit"><span data-i18n="Checkout">Checkout</span> <span>→</span></button>
       </form>
-      <button class="button dark checkout"><span data-i18n="checkout">Checkout</span> <span>→</span></button>
+      
     </aside>
-    <div class="overlay" data-action="close-cart"></div>
+    <aside class="cart-drawer favorites-drawer" id="favorites-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <h2 data-i18n="favorites">Favorites</h2>
+        <button data-action="close-favorites" aria-label="Close favorites">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div id="favorites-items"></div>
+    </aside>
+    <div class="overlay" data-action="close-drawers"></div>
     <a class="whatsapp-float" href="https://wa.me/201125935705" data-whatsapp-message="customOrder" aria-label="Chat on WhatsApp" target="_blank" rel="noopener noreferrer">
       <i data-lucide="message-circle"></i>
     </a>
