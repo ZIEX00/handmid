@@ -18,11 +18,17 @@ const productsTable = document.querySelector('#products-table');
 const ordersList = document.querySelector('#orders-list');
 const customRequestsList = document.querySelector('#custom-requests-list');
 const reviewsList = document.querySelector('#reviews-list');
+const invoiceForm = document.querySelector('#invoice-form');
+const invoiceItems = document.querySelector('#invoice-items');
+const invoiceTotal = document.querySelector('#invoice-total');
+const invoiceMessage = document.querySelector('#invoice-message');
+const saveInvoiceButton = document.querySelector('#save-invoice');
 
 let products = [];
 let orders = [];
 let customRequests = [];
 let reviews = [];
+let editingProductId = null;
 
 function setAuthMessage(text, type = 'error') {
   authMessage.textContent = text;
@@ -145,6 +151,7 @@ async function loadProducts() {
   if (!handmadeSupabase) {
     products = getStoredProducts();
     renderProductsTable();
+    refreshInvoiceProductOptions();
     return;
   }
 
@@ -160,6 +167,7 @@ async function loadProducts() {
 
   products = data || [];
   renderProductsTable();
+  refreshInvoiceProductOptions();
 }
 
 async function loadOrders() {
@@ -262,6 +270,7 @@ function renderProductsTable() {
           <td>
             <div class="inventory-actions">
               <button class="table-action" data-action="save-stock" data-product-id="${product.id}" type="button">حفظ</button>
+              <button class="table-action" data-action="edit-product" data-product-id="${product.id}" type="button">تعديل</button>
               <button class="table-action delete" data-action="delete-product" data-product-id="${product.id}" type="button">حذف</button>
             </div>
           </td>
@@ -491,6 +500,33 @@ async function deleteProduct(productId) {
   setAuthMessage('تم حذف المنتج.', 'success');
 }
 
+function startProductEdit(productId) {
+  const product = products.find((item) => String(item.id) === String(productId));
+  if (!product) return;
+
+  editingProductId = product.id;
+  productForm.elements.namedItem('name').value = product.name || '';
+  productForm.elements.namedItem('name_ar').value = product.name_ar || '';
+  productForm.elements.namedItem('category').value = product.category || 'Crochet';
+  productForm.elements.namedItem('price').value = Number(product.price || 0);
+  productForm.elements.namedItem('stock').value = Number(product.stock || 0);
+  productForm.elements.namedItem('image').value = product.image || '';
+  productForm.elements.namedItem('images').value = Array.isArray(product.images) ? product.images.join('\n') : (product.images || '');
+  productForm.elements.namedItem('description').value = product.description || '';
+  document.querySelector('#product-form-title').textContent = 'تعديل المنتج';
+  document.querySelector('#save-product').textContent = 'حفظ التعديلات';
+  document.querySelector('#cancel-product-edit').classList.remove('hidden');
+  productForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetProductForm() {
+  editingProductId = null;
+  productForm.reset();
+  document.querySelector('#product-form-title').textContent = 'إضافة منتج';
+  document.querySelector('#save-product').textContent = 'حفظ المنتج';
+  document.querySelector('#cancel-product-edit').classList.add('hidden');
+}
+
 function renderStats() {
   document.querySelector('#product-count').textContent = String(products.length);
   document.querySelector('#order-count').textContent = String(orders.length);
@@ -498,6 +534,169 @@ function renderStats() {
   document.querySelector('#revenue-total').textContent = `EGP ${totalRevenue}`;
   const stockTotal = products.reduce((sum, product) => sum + Number(product.stock || 0), 0);
   document.querySelector('#stock-total').textContent = String(stockTotal);
+}
+
+function populateInvoiceProductSelect(select) {
+  const selectedValue = select.value;
+  const emptyOption = document.createElement('option');
+  emptyOption.value = '';
+  emptyOption.textContent = 'بند يدوي';
+  select.replaceChildren(emptyOption);
+  products.forEach((product) => {
+    const option = document.createElement('option');
+    option.value = String(product.id);
+    option.textContent = product.name_ar || product.name;
+    option.dataset.name = product.name_ar || product.name;
+    option.dataset.price = String(Number(product.price || 0));
+    select.append(option);
+  });
+  select.value = selectedValue;
+}
+
+function refreshInvoiceProductOptions() {
+  invoiceItems.querySelectorAll('.invoice-product-select').forEach(populateInvoiceProductSelect);
+}
+
+function addInvoiceItemRow() {
+  const row = document.createElement('div');
+  row.className = 'invoice-item-row';
+
+  const productField = document.createElement('div');
+  productField.className = 'field';
+  const productLabel = document.createElement('label');
+  productLabel.textContent = 'اختيار منتج (اختياري)';
+  const productSelect = document.createElement('select');
+  productSelect.className = 'invoice-product-select';
+  populateInvoiceProductSelect(productSelect);
+  productField.append(productLabel, productSelect);
+
+  const nameField = document.createElement('div');
+  nameField.className = 'field';
+  const nameLabel = document.createElement('label');
+  nameLabel.textContent = 'اسم البند';
+  const nameInput = document.createElement('input');
+  nameInput.className = 'invoice-item-name';
+  nameInput.type = 'text';
+  nameInput.required = true;
+  nameField.append(nameLabel, nameInput);
+
+  const priceField = document.createElement('div');
+  priceField.className = 'field';
+  const priceLabel = document.createElement('label');
+  priceLabel.textContent = 'سعر الوحدة';
+  const priceInput = document.createElement('input');
+  priceInput.className = 'invoice-item-price';
+  priceInput.type = 'number';
+  priceInput.min = '0';
+  priceInput.step = '0.01';
+  priceInput.value = '0';
+  priceInput.required = true;
+  priceField.append(priceLabel, priceInput);
+
+  const quantityField = document.createElement('div');
+  quantityField.className = 'field';
+  const quantityLabel = document.createElement('label');
+  quantityLabel.textContent = 'الكمية';
+  const quantityInput = document.createElement('input');
+  quantityInput.className = 'invoice-item-quantity';
+  quantityInput.type = 'number';
+  quantityInput.min = '1';
+  quantityInput.step = '1';
+  quantityInput.value = '1';
+  quantityInput.required = true;
+  quantityField.append(quantityLabel, quantityInput);
+
+  const removeButton = document.createElement('button');
+  removeButton.className = 'table-action delete';
+  removeButton.type = 'button';
+  removeButton.dataset.action = 'remove-invoice-item';
+  removeButton.textContent = 'حذف';
+  row.append(productField, nameField, priceField, quantityField, removeButton);
+  invoiceItems.append(row);
+  updateInvoiceTotal();
+}
+
+function updateInvoiceTotal() {
+  const total = [...invoiceItems.querySelectorAll('.invoice-item-row')].reduce((sum, row) => {
+    const price = Number(row.querySelector('.invoice-item-price').value);
+    const quantity = Number(row.querySelector('.invoice-item-quantity').value);
+    return sum + (Number.isFinite(price) && Number.isFinite(quantity) ? price * quantity : 0);
+  }, 0);
+  invoiceTotal.textContent = `${total.toLocaleString('ar-EG')} جنيه`;
+}
+
+async function handleInvoiceSubmit(event) {
+  event.preventDefault();
+  invoiceMessage.replaceChildren();
+  invoiceMessage.className = 'message';
+  const formData = new FormData(invoiceForm);
+  const items = [...invoiceItems.querySelectorAll('.invoice-item-row')].map((row) => ({
+    name: row.querySelector('.invoice-item-name').value.trim(),
+    price: Number(row.querySelector('.invoice-item-price').value),
+    quantity: Number(row.querySelector('.invoice-item-quantity').value),
+  }));
+
+  if (!items.length || items.some((item) => !item.name || !Number.isFinite(item.price) || item.price < 0 || !Number.isInteger(item.quantity) || item.quantity < 1)) {
+    invoiceMessage.textContent = 'تأكد من إدخال اسم وسعر وكمية صحيحة لكل بند.';
+    invoiceMessage.classList.add('error');
+    return;
+  }
+
+  const payload = {
+    customer_name: String(formData.get('customer_name') || '').trim(),
+    phone: String(formData.get('phone') || '').trim(),
+    address: String(formData.get('address') || '').trim(),
+    notes: String(formData.get('notes') || '').trim(),
+    total: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    status: 'confirmed',
+    items,
+  };
+
+  if (!payload.customer_name) {
+    invoiceMessage.textContent = 'من فضلك اكتب اسم العميل.';
+    invoiceMessage.classList.add('error');
+    return;
+  }
+
+  saveInvoiceButton.disabled = true;
+  let invoiceId;
+  try {
+    if (handmadeSupabase) {
+      const { data, error } = await handmadeSupabase
+        .from('orders')
+        .insert([payload])
+        .select('id')
+        .single();
+      if (error) throw error;
+      invoiceId = data.id;
+      await loadOrders();
+    } else {
+      invoiceId = Date.now();
+      const newOrder = { ...payload, id: invoiceId, created_at: new Date().toISOString() };
+      orders = [newOrder, ...orders];
+      localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
+      renderOrders();
+      renderStats();
+    }
+
+    invoiceForm.reset();
+    invoiceItems.replaceChildren();
+    addInvoiceItemRow();
+    invoiceMessage.className = 'message success';
+    invoiceMessage.append(document.createTextNode('تم حفظ الفاتورة. '));
+    const invoiceLink = document.createElement('a');
+    invoiceLink.href = `invoice.html?id=${encodeURIComponent(invoiceId)}`;
+    invoiceLink.target = '_blank';
+    invoiceLink.rel = 'noopener';
+    invoiceLink.textContent = 'عرض وطباعة الفاتورة';
+    invoiceMessage.append(invoiceLink);
+  } catch (error) {
+    console.error('Unable to create invoice.', error);
+    invoiceMessage.textContent = `تعذر حفظ الفاتورة: ${error.message || 'حدث خطأ غير متوقع.'}`;
+    invoiceMessage.className = 'message error';
+  } finally {
+    saveInvoiceButton.disabled = false;
+  }
 }
 
 async function handleProductSubmit(event) {
@@ -512,42 +711,66 @@ async function handleProductSubmit(event) {
     image: String(formData.get('image') || '').trim(),
     images: String(formData.get('images') || '').split(/[\n,]+/).map((image) => image.trim()).filter(Boolean),
     description: String(formData.get('description') || '').trim(),
-    is_active: true,
   };
 
-  if (!payload.name || !payload.image) {
+  if (!payload.name || !payload.image || !Number.isFinite(payload.price) || payload.price < 0
+    || !Number.isInteger(payload.stock) || payload.stock < 0) {
+    setAuthMessage('تأكد من إدخال اسم وصورة وسعر وكمية صحيحة للمنتج.', 'error');
     return;
   }
 
+  const isEditing = editingProductId !== null;
   if (!handmadeSupabase) {
-    const updatedProducts = [{
-      ...payload,
-      id: Date.now(),
-      created_at: new Date().toISOString(),
-    }, ...products];
+    const updatedProducts = !isEditing
+      ? [{ ...payload, is_active: true, id: Date.now(), created_at: new Date().toISOString() }, ...products]
+      : products.map((product) => String(product.id) === String(editingProductId) ? { ...product, ...payload } : product);
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updatedProducts));
     localStorage.setItem(PRODUCTS_KEY_FALLBACK, JSON.stringify(updatedProducts));
     products = updatedProducts;
     renderProductsTable();
     renderStats();
-    productForm.reset();
+    refreshInvoiceProductOptions();
+    resetProductForm();
+    setAuthMessage(isEditing ? 'تم تحديث المنتج.' : 'تم حفظ المنتج.', 'success');
     return;
   }
 
-  const { error } = await handmadeSupabase.from('products').insert([payload]);
+  const { error } = isEditing
+    ? await handmadeSupabase.from('products').update(payload).eq('id', editingProductId)
+    : await handmadeSupabase.from('products').insert([{ ...payload, is_active: true }]);
   if (error) {
-    setAuthMessage(`تعذر حفظ المنتج: ${error.message}`, 'error');
+    setAuthMessage(`تعذر ${isEditing ? 'تحديث' : 'حفظ'} المنتج: ${error.message}`, 'error');
     return;
   }
 
-  productForm.reset();
+  resetProductForm();
   await loadProducts();
   renderStats();
+  setAuthMessage(isEditing ? 'تم تحديث المنتج.' : 'تم حفظ المنتج.', 'success');
 }
 
 loginForm.addEventListener('submit', handleLogin);
 logoutBtn.addEventListener('click', handleLogout);
 productForm.addEventListener('submit', handleProductSubmit);
+invoiceForm.addEventListener('submit', handleInvoiceSubmit);
+document.querySelector('#add-invoice-item').addEventListener('click', addInvoiceItemRow);
+invoiceItems.addEventListener('input', updateInvoiceTotal);
+invoiceItems.addEventListener('change', (event) => {
+  if (!event.target.matches('.invoice-product-select')) return;
+  const option = event.target.selectedOptions[0];
+  const row = event.target.closest('.invoice-item-row');
+  if (!option.value) return;
+  row.querySelector('.invoice-item-name').value = option.dataset.name;
+  row.querySelector('.invoice-item-price').value = option.dataset.price;
+  updateInvoiceTotal();
+});
+invoiceItems.addEventListener('click', (event) => {
+  const removeButton = event.target.closest('[data-action="remove-invoice-item"]');
+  if (!removeButton) return;
+  removeButton.closest('.invoice-item-row').remove();
+  if (!invoiceItems.children.length) addInvoiceItemRow();
+  else updateInvoiceTotal();
+});
 ordersList.addEventListener('change', (event) => {
   if (event.target.matches('.order-status')) {
     updateOrderStatus(event.target.dataset.orderId, event.target.value);
@@ -561,6 +784,9 @@ productsTable.addEventListener('click', (event) => {
   const action = event.target.closest('[data-action]');
   if (!action) return;
   const productId = action.dataset.productId;
+  if (action.dataset.action === 'edit-product') {
+    startProductEdit(productId);
+  }
   if (action.dataset.action === 'delete-product') {
     deleteProduct(productId);
   }
@@ -569,6 +795,7 @@ productsTable.addEventListener('click', (event) => {
     updateProductStock(productId, input?.value);
   }
 });
+document.querySelector('#cancel-product-edit').addEventListener('click', resetProductForm);
 customRequestsList.addEventListener('change', (event) => {
   if (event.target.matches('.custom-request-status')) {
     updateCustomRequestStatus(event.target.dataset.requestId, event.target.value);
@@ -588,9 +815,10 @@ reviewsList.addEventListener('click', (event) => {
 });
 
 window.addEventListener('storage', (event) => {
-  if (event.key === ORDER_KEY && !handmadeSupabase) {
-    loadOrders();
+  if (event.key === ORDER_KEY) {
+    Promise.all([loadProducts(), loadOrders()]).then(renderStats);
   }
 });
 
+addInvoiceItemRow();
 checkSession();

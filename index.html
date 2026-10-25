@@ -35,7 +35,7 @@
       </nav>
       <div class="header-actions">
         <button class="language-toggle" data-action="language" aria-label="Switch language">عربي</button>
-        <button aria-label="Search"><i data-lucide="search"></i></button
+        <button type="button" aria-label="Search" data-i18n-aria-label="search" data-action="search"><i data-lucide="search"></i></button
         ><button id="favorites-button" aria-label="Favorites" data-action="favorites"><i data-lucide="heart"></i></button
         ><button
           class="cart-button"
@@ -124,7 +124,7 @@
             Want something special? Choose your colors, size and style — and
             we’ll create it just for you.
           </p>
-          <a class="button light" href="#contact"
+          <a class="button light" href="custom-orders.html"
             ><span data-i18n="requestOrder">Request Custom Order</span> <span>→</span></a
           >
         </div>
@@ -248,13 +248,18 @@
         </label>
         <label>
           <span data-i18n="phoneLabel">Phone</span>
-          <input type="tel" name="phone" placeholder="01xxxxxxxxx" required />
+          <input type="tel" name="phone" autocomplete="tel" placeholder="01xxxxxxxxx" required />
+        </label>
+        <label>
+          <span data-i18n="addressLabel">Delivery address</span>
+          <input type="text" name="address" autocomplete="street-address" placeholder="المحافظة، المنطقة، العنوان بالتفصيل" required />
         </label>
         <label>
           <span data-i18n="noteLabel">Order note</span>
           <textarea name="note" rows="3" placeholder="اكتب الألوان أو أي تفاصيل تفضلها"></textarea>
         </label>
-        <button class="button dark submit-order" type="submit"><span data-i18n="Checkout">Checkout</span> <span>→</span></button>
+        <p class="checkout-note" data-i18n="checkoutNote">After you place your order, we will contact you to confirm delivery and payment details.</p>
+        <button class="button dark submit-order" type="submit"><span data-i18n="placeOrder">Place Order</span> <span>→</span></button>
       </form>
       
     </aside>
