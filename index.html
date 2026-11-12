@@ -66,12 +66,15 @@
       </section>
       <section class="section categories" id="categories">
         <div class="section-heading">
-          <h2 data-i18n="shopByCategory">Shop by Category</h2>
+          <div class="category-heading-copy">
+            <p class="eyebrow" data-i18n="categoriesEyebrow">FIND YOUR FAVORITE</p>
+            <h2 data-i18n="shopByCategory">Shop by Category</h2>
+          </div>
           <a href="#shop"><span data-i18n="viewAll">View All</span> <span>→</span></a>
         </div>
         <div class="category-grid" id="category-grid"></div>
       </section>
-      <section class="section story-section" id="story">
+      <section class="section story-section" id="about">
         <div class="story-copy">
           <p class="eyebrow" data-i18n="storyEyebrow">OUR STORY</p>
           <h2 data-i18n="storyTitle">Crafted slowly, made to feel personal.</h2>
@@ -81,12 +84,12 @@
           </p>
           <div class="story-points">
             <div>
-              <strong data-i18n="smallBatch">Small batch</strong>
-              <span data-i18n="smallBatchDescription">Thoughtfully made in limited runs.</span>
+              <strong data-i18n="madeByHand">Made by hand</strong>
+              <span data-i18n="madeByHandDescription">Thoughtful crochet, beadwork, and accessories.</span>
             </div>
             <div>
-              <strong data-i18n="giftReady">Gift-ready</strong>
-              <span data-i18n="giftReadyDescription">Beautiful packaging for every order.</span>
+              <strong data-i18n="customMade">Made for you</strong>
+              <span data-i18n="customMadeDescription">Make your own idea part of the design.</span>
             </div>
           </div>
         </div>
@@ -140,10 +143,10 @@
         </div>
         <div class="custom-photo"></div>
       </section>
-      <section class="section testimonials" id="about">
+      <section class="section testimonials" id="reviews">
         <div class="section-heading">
           <h2 data-i18n="customerReviews">What Our Customers Say</h2>
-          <a href="#about"><span data-i18n="viewReviews">View All Reviews</span> <span>→</span></a>
+          <a href="#reviews"><span data-i18n="viewReviews">View All Reviews</span> <span>→</span></a>
         </div>
         <div class="review-grid" id="review-grid"></div>
         <form class="review-form" id="review-form">
@@ -174,12 +177,26 @@
             <span data-i18n="whatsappUs">Chat with us on WhatsApp</span>
           </a>
           <a class="contact-number" href="https://wa.me/201125935705" target="_blank" rel="noopener noreferrer">+20 11 2593 5705</a>
+          <div class="contact-socials" aria-label="Instagram, TikTok and Facebook" data-i18n-aria-label="socialMedia">
+            <a href="https://www.instagram.com/handmade_egypt_1/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" data-i18n-aria-label="instagram">
+              <i data-lucide="camera" aria-hidden="true"></i>
+              <span data-i18n="instagram">Instagram</span>
+            </a>
+            <a href="https://www.tiktok.com/@handmade_egypt0?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok" data-i18n-aria-label="tiktok">
+              <i data-lucide="music-2" aria-hidden="true"></i>
+              <span data-i18n="tiktok">TikTok</span>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61594806186939" target="_blank" rel="noopener noreferrer" aria-label="Facebook" data-i18n-aria-label="facebook">
+              <i data-lucide="users-round" aria-hidden="true"></i>
+              <span data-i18n="facebook">Facebook</span>
+            </a>
+          </div>
         </div>
       </section>
       <section class="instagram" id="instagram">
         <div class="section-heading">
           <h2 data-i18n="followUs">Follow Us @handmade_egypt_1</h2>
-          <a href="https://www.instagram.com/handmade_egypt_1/"><span data-i18n="moreInstagram">More on Instagram</span> <span>→</span></a>
+          <a href="https://www.instagram.com/handmade_egypt_1/" target="_blank" rel="noopener noreferrer"><span data-i18n="moreInstagram">More on Instagram</span> <span>→</span></a>
         </div>
         <div class="insta-grid">
           <img
@@ -239,8 +256,9 @@
         <p class="empty-cart" data-i18n="emptyCart">Your bag is waiting for something special.</p>
       </div>
       <div class="cart-total">
-        <span data-i18n="total">Total</span><strong id="cart-total">EGP 0</strong>
+        <span data-i18n="productsSubtotal">Products subtotal</span><strong id="cart-total">EGP 0</strong>
       </div>
+      <p class="delivery-fee-note" data-i18n="deliveryFeeConfirmation">Delivery fees depend on your products and address. Our customer service team will confirm the delivery cost with you when confirming your order.</p>
       <form class="checkout-form" id="checkout-form">
         <label>
           <span data-i18n="nameLabel">Name</span>
