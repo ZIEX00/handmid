@@ -36,7 +36,7 @@ const FAVORITES_KEY = "handmade-favorites";
 const PRODUCT_PREVIEW_LIMIT = 10;
 let products = fallbackProducts;
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-let language = localStorage.getItem("handmade-language") || "en";
+let language = localStorage.getItem("handmade-language") || "ar";
 let activeCategory = "all";
 let searchTerm = "";
 let showAllProducts = false;
@@ -419,8 +419,15 @@ document.addEventListener("click", (event) => {
   }
 
   if (event.target.closest('[data-action="search"]')) {
-    document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
-    window.setTimeout(() => document.querySelector("#product-search").focus(), 350);
+    const searchInput = document.querySelector("#product-search");
+    searchTerm = "";
+    searchInput.value = "";
+    activeCategory = "all";
+    showAllProducts = false;
+    renderFilterPills();
+    renderProducts();
+    searchInput.focus({ preventScroll: true });
+    document.querySelector("#shop").scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
 

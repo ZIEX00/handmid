@@ -5,23 +5,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HANDMADE | طلب خاص</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      .custom-page { min-height: 100vh; padding-bottom: 70px; }
-      .custom-hero { padding: 48px clamp(22px, 8vw, 120px) 30px; display: grid; grid-template-columns: 1fr 0.8fr; gap: 50px; align-items: center; }
-      .custom-hero h1 { margin: 0 0 14px; font: 600 clamp(36px, 5vw, 64px)/1.05 "Playfair Display", serif; }
-      .custom-hero p { color: var(--muted); line-height: 1.9; max-width: 540px; }
-      .custom-visual { min-height: 300px; border-radius: 26px; background: url("logos/custom-order.png") center/cover; box-shadow: 0 20px 40px rgba(46, 36, 29, 0.12); }
-      .custom-form { max-width: 900px; margin: 0 auto; padding: 28px clamp(22px, 5vw, 48px); background: var(--cream); border: 1px solid var(--line); border-radius: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-      .custom-form label { display: grid; gap: 7px; font-size: 11px; color: var(--muted); }
+      .custom-page {
+        min-height: 100vh;
+        padding: 12px 22px 76px;
+        background:
+          radial-gradient(ellipse at 12% 18%, rgba(185, 110, 93, 0.09), transparent 32%),
+          var(--paper);
+      }
+      .custom-hero {
+        width: min(1120px, 100%);
+        min-height: 380px;
+        margin: 0 auto;
+        padding: 38px 0 30px;
+        display: grid;
+        grid-template-columns: 1fr 0.9fr;
+        gap: clamp(30px, 6vw, 76px);
+        align-items: center;
+      }
+      .custom-hero > div:first-child { max-width: 520px; }
+      .custom-hero .eyebrow {
+        color: var(--terracotta);
+        font-weight: 700;
+      }
+      .custom-hero h1 {
+        margin: 0 0 14px;
+        font: 600 clamp(36px, 5vw, 58px)/1.12 "Playfair Display", serif;
+      }
+      .custom-hero p:not(.eyebrow) {
+        max-width: 500px;
+        margin: 0 0 24px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.9;
+      }
+      .custom-visual {
+        min-height: 310px;
+        border: 8px solid rgba(255, 255, 255, 0.55);
+        border-radius: 28px;
+        background:
+          linear-gradient(135deg, rgba(46, 36, 29, 0.02), rgba(46, 36, 29, 0.18)),
+          url("logos/custom-order.png") center/cover;
+        box-shadow: 0 22px 48px rgba(46, 36, 29, 0.14);
+      }
+      .custom-hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .custom-hero-actions .catalog-back {
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fffaf4;
+        font-weight: 600;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .custom-hero-actions .catalog-back:hover {
+        transform: translateY(-2px);
+        background: var(--olive);
+      }
+      .custom-language {
+        min-height: 40px;
+        padding: 8px 15px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--cream);
+        font-weight: 600;
+        transition: background 0.2s ease;
+      }
+      .custom-language:hover { background: #fff; }
+      .custom-form {
+        width: min(900px, 100%);
+        margin: 0 auto;
+        padding: clamp(22px, 4vw, 38px);
+        background: var(--cream);
+        border: 1px solid rgba(221, 209, 197, 0.9);
+        border-radius: 24px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 19px 16px;
+        box-shadow: 0 18px 48px rgba(46, 36, 29, 0.07);
+      }
+      .custom-form label {
+        display: grid;
+        gap: 8px;
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 600;
+      }
       .custom-form .wide { grid-column: 1 / -1; }
-      .custom-form input, .custom-form select, .custom-form textarea { width: 100%; padding: 12px 13px; border: 1px solid var(--line); border-radius: 11px; background: #fff; color: var(--ink); font: inherit; }
-      .custom-form textarea { resize: vertical; min-height: 110px; }
-      .custom-form input[type="file"] { padding: 9px; }
-      .attachment-preview { display: none; max-width: 180px; max-height: 120px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }
-      .custom-form button { border: 0; cursor: pointer; }
-      .custom-language { justify-self: start; border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; background: var(--cream); cursor: pointer; }
-      .custom-hero-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-      @media (max-width: 720px) { .custom-hero { grid-template-columns: 1fr; gap: 22px; } .custom-visual { min-height: 220px; } .custom-form { grid-template-columns: 1fr; } .custom-form .wide { grid-column: auto; } }
+      .custom-form input,
+      .custom-form select,
+      .custom-form textarea {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        outline: none;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-weight: 400;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .custom-form input::placeholder,
+      .custom-form textarea::placeholder { color: #a3978d; }
+      .custom-form input:focus,
+      .custom-form select:focus,
+      .custom-form textarea:focus {
+        border-color: var(--terracotta);
+        box-shadow: 0 0 0 3px rgba(185, 110, 93, 0.13);
+      }
+      .custom-form textarea { min-height: 120px; resize: vertical; }
+      .custom-form input[type="file"] {
+        min-height: auto;
+        padding: 9px;
+        background: #fff;
+      }
+      .custom-form label small {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 400;
+      }
+      .attachment-preview {
+        display: none;
+        max-width: 200px;
+        max-height: 140px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      .custom-form .button {
+        min-height: 48px;
+        padding-inline: 22px;
+        font-size: 13px;
+      }
+      .custom-form .button:hover { background: var(--olive); }
+      @media (max-width: 720px) {
+        .custom-page { padding: 10px 16px 48px; }
+        .custom-hero {
+          min-height: 0;
+          padding: 32px 0 24px;
+          grid-template-columns: 1fr;
+          gap: 22px;
+        }
+        .custom-hero h1 { font-size: clamp(34px, 9vw, 48px); }
+        .custom-hero p:not(.eyebrow) { font-size: 14px; }
+        .custom-visual { min-height: 230px; }
+        .custom-form { grid-template-columns: 1fr; gap: 16px; }
+        .custom-form .wide { grid-column: auto; }
+      }
+      @media (max-width: 420px) {
+        .custom-page { padding-inline: 12px; }
+        .custom-visual { min-height: 190px; }
+        .custom-form { padding: 20px 16px; border-radius: 18px; }
+      }
     </style>
   </head>
   <body>
@@ -42,7 +189,7 @@
       <form class="custom-form" id="custom-order-form">
         <label><span data-i18n="name">الاسم</span><input name="name" type="text" placeholder="اسمك" required /></label>
         <label><span data-i18n="phone">رقم الهاتف</span><input name="phone" type="tel" placeholder="01xxxxxxxxx" required /></label>
-        <label><span data-i18n="category">نوع المنتج</span><select name="category"><option value="كروشيه" data-i18n="optCrochet">كروشيه</option><option value="مشغولات خرز" data-i18n="optBeadwork">مشغولات خرز</option><option value="ميدالية" data-i18n="optKeychain">ميدالية</option><option value="شنطة" data-i18n="optBag">شنطة</option><option value="أخرى" data-i18n="optOther">أخرى</option></select></label>
+        <label><span data-i18n="category">نوع المنتج</span><select name="category"><option value="كروشيه" data-i18n="optCrochet">كروشيه</option><option value="مشغولات خرز" data-i18n="optBeadwork">مشغولات خرز</option><option value="ميدالية" data-i18n="optKeychain">ميدالية</option><option value="شنطه كروشيه" data-i18n="optBag">شنطة كروشيه</option><option value="أخرى" data-i18n="optOther">أخرى</option></select></label>
         <label><span data-i18n="size">المقاس أو الكمية</span><input name="size" type="text" placeholder="مثال: متوسط، قطعتين" /></label>
         <label><span data-i18n="colors">الألوان المفضلة</span><input name="colors" type="text" placeholder="مثال: أوف وايت ووردي" /></label>
         <label><span data-i18n="deadline">موعد التسليم المطلوب</span><input name="deadline" type="text" placeholder="مثال: خلال أسبوعين" /></label>
@@ -54,5 +201,6 @@
     <div class="toast-container" id="toast-container" aria-live="polite"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="custom-orders.js"></script>
+    <script src="scroll-effects.js"></script>
   </body>
 </html>

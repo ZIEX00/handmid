@@ -823,7 +823,8 @@ img {
   border-radius: 50%;
   background: #657064;
   color: #fff;
-  font-size: 9px;
+  font-size: 10px;
+  
 }
 .avatar.peach {
   background: #c27e70;
@@ -834,11 +835,11 @@ img {
 .review-head b,
 .review-head em {
   display: block;
-  font-size: 9px;
+  font-size: 10px;
   font-style: normal;
 }
 .review-head em {
-  color: #c76c27;
+  color: #fcbb2e;
   margin-top: 3px;
   letter-spacing: 1px;
 }
@@ -1698,6 +1699,24 @@ footer p {
 }
 [dir="rtl"] footer nav {
   direction: rtl;
+}
+[data-scroll-reveal] {
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+[data-scroll-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+[data-scroll-reveal="visible"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-reveal] {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 @media (max-width: 600px) {
   .product-details-modal { padding: 12px; }
