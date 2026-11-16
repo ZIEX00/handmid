@@ -21,10 +21,10 @@
     </div>
     <header class="site-header">
       <a class="brand" href="#home" aria-label="Handmade home"
-        ><span class="brand-mark img"><img src="logos/d8c85763-451f-4025-b596-387877ba0baf.png" alt=""></span
+        ><span class="brand-mark img"><img src="/logos/emblem-transparent.png" alt="Handmade"></span
         ><span
-          ><strong>HANDMADE</strong
-          ><small>Small things, big stories.</small></span
+          ><strong data-i18n="brandName">هاند ميد</strong
+          ><small data-i18n="brandTagline">Small things, big stories.</small></span
         ></a
       >
       <nav class="desktop-nav" id="main-nav" aria-label="Main navigation">
@@ -50,6 +50,12 @@
     </header>
     <main id="home">
       <section class="hero">
+        <div class="hero-background" aria-hidden="true">
+          <img class="active" src="/logos/hero2 (1).jpg" alt="" />
+          <img src="/logos/hero.png" alt="" />
+          <img src="/logos/hero2 (2).jpg" alt="" />
+          
+        </div>
         <div class="hero-copy">
           <p class="eyebrow" data-i18n="heroEyebrow">HANDMADE WITH LOVE</p>
           <h1 data-i18n="heroTitle">Made by Hand.<br />Made for You.</h1>
@@ -59,9 +65,8 @@
           </p>
           <a class="button dark" href="#shop"><span data-i18n="shopCollection">Shop Collection</span> <span>→</span></a>
         </div>
-        <div class="hero-dots">
-          <span class="selected"></span><span></span><span></span><span></span
-          ><span>›</span>
+        <div class="hero-dots" aria-hidden="true">
+          <span class="selected"></span><span></span><span></span>
         </div>
       </section>
       <section class="section categories" id="categories">
@@ -152,7 +157,7 @@
         <form class="review-form" id="review-form">
           <h3 data-i18n="writeReview">شاركنا رأيك</h3>
           <div class="review-form-fields">
-            <input name="name" type="text" placeholder="اسمك" data-review-placeholder="name" required />
+            <input name="name" type="text" placeholder="اسمك (اختياري)" data-review-placeholder="name" />
             <select name="rating" aria-label="التقييم">
               <option value="5">★★★★★</option>
               <option value="4">★★★★</option>
